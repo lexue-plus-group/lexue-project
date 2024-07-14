@@ -51,7 +51,7 @@ public class ContentCodeGenerator {
 		gc.setFileOverride(true);
 		//生成路径
 		gc.setOutputDir(System.getProperty("user.dir") + "/lexue-project-codeGenerator/src/main/java");
-		gc.setAuthor("itcast");
+		gc.setAuthor("leguan");
 		gc.setOpen(false);
 		gc.setSwagger2(false);
 		gc.setServiceName("%sService");
