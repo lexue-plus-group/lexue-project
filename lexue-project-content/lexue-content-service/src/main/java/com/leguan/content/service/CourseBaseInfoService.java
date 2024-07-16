@@ -2,11 +2,14 @@ package com.leguan.content.service;
 
 import com.leguan.base.model.PageParams;
 import com.leguan.base.model.PageResult;
+import com.leguan.content.model.dto.AddCourseDto;
+import com.leguan.content.model.dto.CourseBaseInfoDto;
 import com.leguan.content.model.dto.QueryCourseParamsDto;
 import com.leguan.content.model.po.CourseBase;
+import com.leguan.content.model.po.CourseMarket;
 
 /**
- * description 课程信息管理接口
+ * @description 课程信息管理接口
  */
 public interface CourseBaseInfoService {
 
@@ -17,4 +20,23 @@ public interface CourseBaseInfoService {
      * @return 查询结果
      */
     public PageResult<CourseBase> queryCourseBaseList(PageParams pageParams, QueryCourseParamsDto courseParamsDto);
+
+    /**
+     * 新增课程
+     * @param companyId 机构id
+     * @param addCourseDto 课程信息
+     * @return 课程详细信息
+     */
+    public CourseBaseInfoDto createCourseBase(Long companyId, AddCourseDto addCourseDto);
+
+
+    /**
+     * 查看完整的课程信息包括课程营销信息
+     */
+    public CourseBaseInfoDto getCourseBaseInfo(long courseId);
+
+    /**
+     * 插入或更新课程营销信息
+     */
+    public int saveCourseMarket(CourseMarket courseMarketNew);
 }

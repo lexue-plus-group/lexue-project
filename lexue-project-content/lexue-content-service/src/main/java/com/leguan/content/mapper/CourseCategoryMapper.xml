@@ -18,4 +18,13 @@
         id, name, label, parentid, is_show, orderby, is_leaf
     </sql>
 
+    <select id="selectTreeNodes" parameterType="string" resultType="com.leguan.content.model.dto.CourseCategoryTreeDto">
+        WITH recursive t1 AS (
+            SELECT * FROM course_category WHERE id = #{id}
+            UNION ALL
+            SELECT t2.* FROM course_category t2 INNER JOIN t1 ON t1.id = t2.parentid
+        )
+        SELECT * FROM t1 ORDER BY t1.id
+    </select>
+
 </mapper>
