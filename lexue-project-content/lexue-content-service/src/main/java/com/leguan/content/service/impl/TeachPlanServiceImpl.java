@@ -7,6 +7,7 @@ import com.leguan.content.mapper.TeachplanMediaMapper;
 import com.leguan.content.model.dto.SaveTeachPlanDto;
 import com.leguan.content.model.dto.TeachPlanDto;
 import com.leguan.content.model.po.Teachplan;
+import com.leguan.content.model.po.TeachplanMedia;
 import com.leguan.content.service.TeachPlanService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -67,14 +68,93 @@ public class TeachPlanServiceImpl implements TeachPlanService {
         Integer grade = teachplan.getGrade();
         if (grade == 2) {
             teachplanMapper.deleteById(teachPlanId);
-            teachplanMediaMapper.deleteById(teachPlanId);
+            LambdaQueryWrapper<TeachplanMedia> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(TeachplanMedia::getTeachplanId, teachPlanId);
+            teachplanMediaMapper.delete(wrapper);
         } else {
-            Long courseId = teachplan.getCourseId();
-            List<TeachPlanDto> teachPlanDtoList = teachplanMapper.selectTreeNodes(courseId);
-            if (teachPlanDtoList != null) {
+            LambdaQueryWrapper<Teachplan> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(Teachplan::getParentid, teachPlanId);
+            Integer count = teachplanMapper.selectCount(wrapper);
+            if (count != 0) {
                 LexueException.cast("课程计划信息还有子级信息，无法操作");
             }
             teachplanMapper.deleteById(teachPlanId);
         }
+    }
+
+    @Override
+    public void swapTeachPlanOrderBy(Teachplan teachplan, Teachplan otherTeachplan) {
+        Integer otherOrderBy = otherTeachplan.getOrderby();
+        otherTeachplan.setOrderby(teachplan.getOrderby());
+        teachplan.setOrderby(otherOrderBy);
+        teachplanMapper.updateById(teachplan);
+        teachplanMapper.updateById(otherTeachplan);
+    }
+
+    @Override
+    public void moveDownPlan(Long teachPlanId) {
+        Teachplan teachplan = teachplanMapper.selectById(teachPlanId);
+        Teachplan nextTeachplan = null;
+        LambdaQueryWrapper<Teachplan> wrapper = new LambdaQueryWrapper<>();
+        Integer grade = teachplan.getGrade();
+        Long parentId = teachplan.getParentid();
+        Integer orderBy = teachplan.getOrderby();
+        if (grade == 2) {
+            wrapper = wrapper.eq(Teachplan::getParentid, parentId).eq(Teachplan::getOrderby, orderBy + 1);
+            nextTeachplan = teachplanMapper.selectOne(wrapper);
+        } else {
+            Long courseId = teachplan.getCourseId();
+            wrapper = wrapper.eq(Teachplan::getCourseId, courseId).eq(Teachplan::getParentid, parentId).eq(Teachplan::getOrderby, orderBy + 1);
+            nextTeachplan = teachplanMapper.selectOne(wrapper);
+        }
+        if (nextTeachplan == null) {
+            return;
+        }
+        swapTeachPlanOrderBy(teachplan, nextTeachplan);
+    }
+
+    @Override
+    public void moveUpPlan(Long teachPlanId) {
+        Teachplan teachplan = teachplanMapper.selectById(teachPlanId);
+        Teachplan preTeachplan = null;
+        LambdaQueryWrapper<Teachplan> wrapper = new LambdaQueryWrapper<>();
+        Integer grade = teachplan.getGrade();
+        Long parentId = teachplan.getParentid();
+        Integer orderBy = teachplan.getOrderby();
+        if (grade == 2) {
+            wrapper = wrapper.eq(Teachplan::getParentid, parentId).eq(Teachplan::getOrderby, orderBy - 1);
+            preTeachplan = teachplanMapper.selectOne(wrapper);
+        } else {
+            Long courseId = teachplan.getCourseId();
+            wrapper = wrapper.eq(Teachplan::getCourseId, courseId).eq(Teachplan::getParentid, parentId).eq(Teachplan::getOrderby, orderBy - 1);
+            preTeachplan = teachplanMapper.selectOne(wrapper);
+        }
+        if (preTeachplan == null) {
+            return;
+        }
+        swapTeachPlanOrderBy(teachplan, preTeachplan);
+    }
+
+    @Override
+    public List<Teachplan> getTeachPlanList(Long courseId) {
+        LambdaQueryWrapper<Teachplan> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Teachplan::getCourseId, courseId);
+        List<Teachplan> teachPlans = teachplanMapper.selectList(wrapper);
+        return teachPlans;
+    }
+
+    @Override
+    public List<TeachplanMedia> getTeachPlanMediaList(Long courseId) {
+        LambdaQueryWrapper<TeachplanMedia> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(TeachplanMedia::getCourseId, courseId);
+        List<TeachplanMedia> teachplanMediaList = teachplanMediaMapper.selectList(wrapper);
+        return teachplanMediaList;
+    }
+
+    @Override
+    public void deleteTeachPlanMedia(Long courseId) {
+        LambdaQueryWrapper<TeachplanMedia> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(TeachplanMedia::getCourseId, courseId);
+        teachplanMediaMapper.delete(wrapper);
     }
 }

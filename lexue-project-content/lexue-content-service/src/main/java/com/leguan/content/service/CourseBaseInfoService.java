@@ -8,6 +8,7 @@ import com.leguan.content.model.dto.EditCourseDto;
 import com.leguan.content.model.dto.QueryCourseParamsDto;
 import com.leguan.content.model.po.CourseBase;
 import com.leguan.content.model.po.CourseMarket;
+import org.springframework.web.bind.annotation.PathVariable;
 
 /**
  * @description 课程信息管理接口
@@ -49,4 +50,6 @@ public interface CourseBaseInfoService {
      * @return 课程详细信息
      */
     public CourseBaseInfoDto updateCourseBase(Long companyId, EditCourseDto editCourseDto);
+
+    public void deleteCourseBase(Long companyId, Long courseId);
 }

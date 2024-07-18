@@ -12,10 +12,10 @@ import com.leguan.content.model.dto.AddCourseDto;
 import com.leguan.content.model.dto.CourseBaseInfoDto;
 import com.leguan.content.model.dto.EditCourseDto;
 import com.leguan.content.model.dto.QueryCourseParamsDto;
-import com.leguan.content.model.po.CourseBase;
-import com.leguan.content.model.po.CourseCategory;
-import com.leguan.content.model.po.CourseMarket;
+import com.leguan.content.model.po.*;
 import com.leguan.content.service.CourseBaseInfoService;
+import com.leguan.content.service.CourseTeacherService;
+import com.leguan.content.service.TeachPlanService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -38,6 +38,12 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
 
     @Autowired
     CourseCategoryMapper courseCategoryMapper;
+
+    @Autowired
+    CourseTeacherService courseTeacherService;
+
+    @Autowired
+    TeachPlanService teachPlanService;
 
     @Override
     public PageResult<CourseBase> queryCourseBaseList(PageParams pageParams, QueryCourseParamsDto courseParamsDto) {
@@ -202,6 +208,35 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
             LexueException.cast("保存课程营销信息失败");
         }
         return getCourseBaseInfo(courseId);
+    }
+
+    @Transactional
+    @Override
+    public void deleteCourseBase(Long companyId, Long courseId) {
+        LambdaQueryWrapper<CourseBase> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(CourseBase::getId, courseId);
+        CourseBase courseBase = courseBaseMapper.selectOne(wrapper);
+        if (!companyId.equals(courseBase.getCompanyId())) {
+            LexueException.cast("本机构只能删除本机构的课程");
+        }
+        int i = courseBaseMapper.deleteById(courseId);
+        if (i <= 0) {
+            LexueException.cast("删除课程失败");
+        }
+        int j = courseMarketMapper.deleteById(courseId);
+        if (j <= 0) {
+            LexueException.cast("删除课程失败");
+        }
+
+        List<Teachplan> teachPlanList = teachPlanService.getTeachPlanList(courseId);
+        teachPlanList.stream().forEach(item -> teachPlanService.deleteTeachPlan(item.getId()));
+
+        List<TeachplanMedia> teachPlanMediaList = teachPlanService.getTeachPlanMediaList(courseId);
+        teachPlanMediaList.stream().forEach(item -> teachPlanService.deleteTeachPlanMedia(item.getCourseId()));
+
+        List<CourseTeacher> courseTeachers = courseTeacherService.getCourseTeacherList(courseId);
+        courseTeachers.stream().forEach(item -> courseTeacherService.deleteTeacher(courseId, item.getId()));
+
     }
 
 }

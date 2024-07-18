@@ -3,6 +3,8 @@ package com.leguan.content.service;
 
 import com.leguan.content.model.dto.SaveTeachPlanDto;
 import com.leguan.content.model.dto.TeachPlanDto;
+import com.leguan.content.model.po.Teachplan;
+import com.leguan.content.model.po.TeachplanMedia;
 
 import java.util.List;
 
@@ -32,4 +34,16 @@ public interface TeachPlanService {
     public void saveTeachPlan(SaveTeachPlanDto saveTeachPlanDto);
 
     public void deleteTeachPlan(Long teachPlanId);
+
+    public void swapTeachPlanOrderBy(Teachplan teachplan, Teachplan nextTeachplan);
+
+    public void moveDownPlan(Long teachPlanId);
+
+    public void moveUpPlan(Long teachPlanId);
+
+    public List<Teachplan> getTeachPlanList(Long courseId);
+
+    public List<TeachplanMedia> getTeachPlanMediaList(Long courseId);
+
+    public void deleteTeachPlanMedia(Long courseId);
 }
