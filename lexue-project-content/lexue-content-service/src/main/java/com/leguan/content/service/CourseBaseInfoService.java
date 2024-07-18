@@ -4,6 +4,7 @@ import com.leguan.base.model.PageParams;
 import com.leguan.base.model.PageResult;
 import com.leguan.content.model.dto.AddCourseDto;
 import com.leguan.content.model.dto.CourseBaseInfoDto;
+import com.leguan.content.model.dto.EditCourseDto;
 import com.leguan.content.model.dto.QueryCourseParamsDto;
 import com.leguan.content.model.po.CourseBase;
 import com.leguan.content.model.po.CourseMarket;
@@ -32,11 +33,20 @@ public interface CourseBaseInfoService {
 
     /**
      * 查看完整的课程信息包括课程营销信息
+     * 根据课程id查询课程信息
      */
-    public CourseBaseInfoDto getCourseBaseInfo(long courseId);
+    public CourseBaseInfoDto getCourseBaseInfo(Long courseId);
 
     /**
      * 插入或更新课程营销信息
      */
     public int saveCourseMarket(CourseMarket courseMarketNew);
+
+    /**
+     * 修改课程
+     * @param companyId 机构id
+     * @param editCourseDto 修改课程信息
+     * @return 课程详细信息
+     */
+    public CourseBaseInfoDto updateCourseBase(Long companyId, EditCourseDto editCourseDto);
 }

@@ -33,3 +33,11 @@ Content-Type: application/json
   "grade": "204001",
   "description": "Java网络编程高级Java网络编程高级Java网络编程高级"
 }
+
+### 查询课程信息
+GET {{content_host}}/content/course/40
+Content-Type: application/json
+
+### 课程计划查询
+GET {{content_host}}/content/teachplan/117/tree-nodes
+Content-Type: application/json

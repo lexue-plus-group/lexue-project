@@ -10,6 +10,7 @@ import com.leguan.content.mapper.CourseCategoryMapper;
 import com.leguan.content.mapper.CourseMarketMapper;
 import com.leguan.content.model.dto.AddCourseDto;
 import com.leguan.content.model.dto.CourseBaseInfoDto;
+import com.leguan.content.model.dto.EditCourseDto;
 import com.leguan.content.model.dto.QueryCourseParamsDto;
 import com.leguan.content.model.po.CourseBase;
 import com.leguan.content.model.po.CourseCategory;
@@ -65,7 +66,7 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
     public CourseBaseInfoDto createCourseBase(Long companyId, AddCourseDto dto) {
 
         //参数合法性校验
-        if (StringUtils.isBlank(dto.getName())) {
+        /*if (StringUtils.isBlank(dto.getName())) {
             //throw new RuntimeException("课程名称为空");
             LexueException.cast("课程名称为空");
         }
@@ -92,7 +93,7 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
 
         if (StringUtils.isBlank(dto.getCharge())) {
             throw new RuntimeException("收费规则为空");
-        }
+        }*/
 
         //向课程基本信息表course_base写入数据
         CourseBase courseBaseNew = new CourseBase();
@@ -123,7 +124,7 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
     }
 
     //根据课程id查询课程基本信息，包括基本信息和营销信息
-    public CourseBaseInfoDto getCourseBaseInfo(long courseId){
+    public CourseBaseInfoDto getCourseBaseInfo(Long courseId){
 
         CourseBase courseBase = courseBaseMapper.selectById(courseId);
         if(courseBase == null){
@@ -169,6 +170,38 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
             courseMarketObj.setId(courseMarketNew.getId());
             return courseMarketMapper.updateById(courseMarketObj);
         }
+    }
+
+    @Override
+    public CourseBaseInfoDto updateCourseBase(Long companyId, EditCourseDto editCourseDto) {
+
+        Long courseId = editCourseDto.getId();
+        CourseBase courseBase = courseBaseMapper.selectById(courseId);
+        if (courseBase == null) {
+            LexueException.cast("课程不存在");
+        }
+
+        //数据合法性校验
+        if (!companyId.equals(courseBase.getCompanyId())) {
+            LexueException.cast("本机构只能修改本机构的课程");
+        }
+
+        //封装数据
+        BeanUtils.copyProperties(editCourseDto, courseBase);
+        //修改时间
+        courseBase.setChangeDate(LocalDateTime.now());
+        //更新数据库
+        int i = courseBaseMapper.updateById(courseBase);
+        if (i <= 0) {
+            LexueException.cast("修改课程失败");
+        }
+        CourseMarket courseMarket = courseMarketMapper.selectById(courseId);
+        BeanUtils.copyProperties(editCourseDto, courseMarket);
+        int j = saveCourseMarket(courseMarket);
+        if (j <= 0 ) {
+            LexueException.cast("保存课程营销信息失败");
+        }
+        return getCourseBaseInfo(courseId);
     }
 
 }
