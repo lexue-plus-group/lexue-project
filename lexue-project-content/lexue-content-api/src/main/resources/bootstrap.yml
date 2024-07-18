@@ -1,23 +1,49 @@
-server:
-  servlet:
-    context-path: /content
-  port: 63040
+#server:
+#  servlet:
+#    context-path: /content
+#  port: 63040
 #微服务配置
 spring:
   application:
-    name: content-api
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://192.168.101.65:3306/lexue_content?serverTimezone=UTC&userUnicode=true&useSSL=false&
-    username: root
-    password: mysql
-# 日志文件配置路径
-logging:
-  config: classpath:log4j2-dev.xml
+    name: content-api #服务名 content-api-dev.yaml
+  cloud:
+    nacos:
+      server-addr: 192.168.101.65:8848
+      discovery: #服务注册相关配置
+        namespace: lexue
+        group: lexue-project
+      config: #配置文件相关配置
+        namespace: lexue
+        group: lexue-project
+        file-extension: yaml
+        refresh-enabled: true
+        extension-configs:
+          - data-id: content-service-${spring.profiles.active}.yaml
+            group: lexue-project
+            refresh: true
+        shared-configs:
+          - data-id: swagger-${spring.profiles.active}.yaml
+            group: lexue-project-common
+            refresh: true
+          - data-id: logging-${spring.profiles.active}.yaml
+            group: lexue-project-common
+            refresh: true
+  #  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://192.168.101.65:3306/lexue_content?serverTimezone=UTC&userUnicode=true&useSSL=false&
+#    username: root
+#    password: mysql
 
-swagger:
-  title: "乐学课堂内容管理系统"
-  description: "内容系统管理系统对课程相关信息进行管理"
-  base-package: com.leguan.content
-  enabled: true
-  version: 1.0.0
+  profiles:
+    active: dev #环境名
+
+# 日志文件配置路径
+#logging:
+#  config: classpath:log4j2-dev.xml
+
+#swagger:
+#  title: "乐学课堂内容管理系统"
+#  description: "内容系统管理系统对课程相关信息进行管理"
+#  base-package: com.leguan.content
+#  enabled: true
+#  version: 1.0.0
