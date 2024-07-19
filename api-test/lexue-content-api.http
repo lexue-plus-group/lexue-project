@@ -1,5 +1,5 @@
 ### 查询课程信息
-POST {{content_host}}/content/course/list
+POST {{gateway_host}}/content/course/list
 Content-Type: application/json
 
 {
