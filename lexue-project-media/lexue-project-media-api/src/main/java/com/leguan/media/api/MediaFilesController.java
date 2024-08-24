@@ -21,7 +21,6 @@ import java.io.IOException;
  * @author leguan
  * @version 1.0
  * @description 媒资文件管理接口
- * @date 2022/9/6 11:29
  */
 @Api(value = "媒资文件管理接口", tags = "媒资文件管理接口")
 @RestController
@@ -42,7 +41,8 @@ public class MediaFilesController {
 
     @ApiOperation("上传图片")
     @RequestMapping(value = "/upload/coursefile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public UploadFileResultDto upload(@RequestPart("filedata")MultipartFile filedata) throws IOException {
+    public UploadFileResultDto upload(@RequestPart("filedata")MultipartFile filedata,
+                                      @RequestParam(value = "objectName", required = false) String objectName) throws IOException {
 
         Long companyId = 1232141425L;
         File tempFile = File.createTempFile("minio", ".temp");
@@ -54,7 +54,7 @@ public class MediaFilesController {
         uploadFileParamsDto.setFileType("001001");
 
         //调用service上传图片
-        UploadFileResultDto uploadFileResultDto = mediaFileService.uploadFile(companyId, uploadFileParamsDto, localFilePath);
+        UploadFileResultDto uploadFileResultDto = mediaFileService.uploadFile(companyId, uploadFileParamsDto, localFilePath, objectName);
 
         return uploadFileResultDto;
 

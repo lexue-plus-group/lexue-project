@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@MapperScan("com.leguan.content.mapper")
+@MapperScan(value = {"com.leguan.content.mapper", "com.leguan.content.feignclient"})
 public class MybatisPlusConfig {
 
     @Bean

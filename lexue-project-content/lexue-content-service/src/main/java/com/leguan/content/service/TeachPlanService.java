@@ -1,6 +1,7 @@
 package com.leguan.content.service;
 
 
+import com.leguan.content.model.dto.BindTeachPlanMediaDto;
 import com.leguan.content.model.dto.SaveTeachPlanDto;
 import com.leguan.content.model.dto.TeachPlanDto;
 import com.leguan.content.model.po.Teachplan;
@@ -46,4 +47,12 @@ public interface TeachPlanService {
     public List<TeachplanMedia> getTeachPlanMediaList(Long courseId);
 
     public void deleteTeachPlanMedia(Long courseId);
+
+    /**
+     * @description 教学计划绑定媒资
+     * @param bindTeachPlanMediaDto
+     */
+    public TeachplanMedia associationMedia(BindTeachPlanMediaDto bindTeachPlanMediaDto);
+
+    public Teachplan getTeachPlan(Long teachPlanId);
 }

@@ -26,9 +26,10 @@ public class OrderCodeGenerator {
 	private static final String[] TABLE_NAMES = new String[]{
 //			"mq_message",
 //			"mq_message_history",
-			"xc_orders",
-			"xc_orders_goods",
-			"xc_pay_record"
+//			"xc_orders",
+//			"xc_orders_goods",
+//			"xc_pay_record"
+			"tb_voucher_order"
 	};
 
 	// TODO 默认生成entity，需要生成DTO修改此变量
@@ -44,8 +45,8 @@ public class OrderCodeGenerator {
 		GlobalConfig gc = new GlobalConfig();
 		gc.setFileOverride(true);
 		//生成路径
-		gc.setOutputDir(System.getProperty("user.dir") + "/xuecheng-plus-generator/src/main/java");
-		gc.setAuthor("itcast");
+		gc.setOutputDir(System.getProperty("user.dir") + "/lexue-project-codeGenerator/src/main/java");
+		gc.setAuthor("leguan");
 		gc.setOpen(false);
 		gc.setSwagger2(false);
 		gc.setServiceName("%sService");
@@ -61,7 +62,7 @@ public class OrderCodeGenerator {
 		// 数据库配置
 		DataSourceConfig dsc = new DataSourceConfig();
 		dsc.setDbType(DbType.MYSQL);
-		dsc.setUrl("jdbc:mysql://192.168.101.65:3306/xcplus_" + SERVICE_NAME
+		dsc.setUrl("jdbc:mysql://192.168.101.65:3306/lexue_" + SERVICE_NAME
 				+ "?serverTimezone=UTC&useUnicode=true&useSSL=false&characterEncoding=utf8");
 //		dsc.setDriverName("com.mysql.jdbc.Driver");
 		dsc.setDriverName("com.mysql.cj.jdbc.Driver");
@@ -72,7 +73,7 @@ public class OrderCodeGenerator {
 		// 包配置
 		PackageConfig pc = new PackageConfig();
 		pc.setModuleName(SERVICE_NAME);
-		pc.setParent("com.xuecheng");
+		pc.setParent("com.leguan");
 
 		pc.setServiceImpl("service.impl");
 		pc.setXml("mapper");

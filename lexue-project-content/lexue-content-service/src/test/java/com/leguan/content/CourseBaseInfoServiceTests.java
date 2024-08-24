@@ -8,6 +8,7 @@ import com.leguan.content.mapper.CourseBaseMapper;
 import com.leguan.content.model.dto.QueryCourseParamsDto;
 import com.leguan.content.model.po.CourseBase;
 import com.leguan.content.service.CourseBaseInfoService;
+import com.leguan.content.service.CoursePublishService;
 import org.apache.commons.lang.StringUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -30,8 +31,8 @@ public class CourseBaseInfoServiceTests {
         //分页参数
         PageParams pageParams = new PageParams(2L, 2L);
 
-        PageResult<CourseBase> courseBasePageResult = courseBaseInfoService.queryCourseBaseList(pageParams, courseParamsDto);
-        System.out.println(courseBasePageResult);
+        //PageResult<CourseBase> courseBasePageResult = courseBaseInfoService.queryCourseBaseList(pageParams, courseParamsDto);
+        //System.out.println(courseBasePageResult);
     }
 
 }

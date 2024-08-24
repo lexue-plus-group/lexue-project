@@ -1,0 +1,35 @@
+package com.leguan.learning.feignclient;
+
+import com.leguan.content.model.po.CoursePublish;
+import com.leguan.content.model.po.Teachplan;
+import feign.hystrix.FallbackFactory;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+
+/**
+ * @author Mr.M
+ * @version 1.0
+ * @description TODO
+ * @date 2022/10/25 9:14
+ */
+@Slf4j
+@Component
+public class ContentServiceClientFallbackFactory implements FallbackFactory<ContentServiceClient> {
+    @Override
+    public ContentServiceClient create(Throwable throwable) {
+        return new ContentServiceClient() {
+
+            @Override
+            public CoursePublish getCoursepublish(Long courseId) {
+                log.error("调用内容管理服务发生熔断:{}", throwable.toString(),throwable);
+                return null;
+            }
+
+            @Override
+            public Teachplan getTeachPlan(Long teachPlanId) {
+                log.error("调用内容管理服务发生熔断:{}", throwable.toString(),throwable);
+                return null;
+            }
+        };
+    }
+}

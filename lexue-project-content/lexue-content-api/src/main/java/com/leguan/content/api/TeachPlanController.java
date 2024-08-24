@@ -1,7 +1,9 @@
 package com.leguan.content.api;
 
+import com.leguan.content.model.dto.BindTeachPlanMediaDto;
 import com.leguan.content.model.dto.SaveTeachPlanDto;
 import com.leguan.content.model.dto.TeachPlanDto;
+import com.leguan.content.model.po.Teachplan;
 import com.leguan.content.service.TeachPlanService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -51,5 +53,17 @@ public class TeachPlanController {
     @PostMapping("/teachplan/moveup/{teachPlanId}")
     public void moveUp(@PathVariable Long teachPlanId) {
         teachPlanService.moveUpPlan(teachPlanId);
+    }
+
+    @ApiOperation(value = "课程计划和媒资信息绑定")
+    @PostMapping("/teachplan/association/media")
+    public void associationMedia(@RequestBody BindTeachPlanMediaDto bindTeachPlanMediaDto){
+        teachPlanService.associationMedia(bindTeachPlanMediaDto);
+    }
+
+    @ApiOperation("课程计划查询")
+    @PostMapping("/teachplan/{teachplanId}")
+    public Teachplan getTeachplan(@PathVariable Long teachplanId) {
+        return teachPlanService.getTeachPlan(teachplanId);
     }
 }

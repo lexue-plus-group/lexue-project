@@ -4,11 +4,18 @@ spring:
   cloud:
     nacos:
       server-addr: 192.168.101.65:8848
+      discovery: #服务注册相关配置
+        namespace: lexue
+        group: lexue-project
       config: #配置文件相关配置
         namespace: lexue
         group: lexue-project
         file-extension: yaml
         refresh-enabled: true
+        shared-configs:
+          - data-id: feign-${spring.profiles.active}.yaml
+            group: lexue-project-common
+            refresh: true
 #  datasource:
 #    driver-class-name: com.mysql.cj.jdbc.Driver
 #    url: jdbc:mysql://192.168.101.65:3306/lexue_content?serverTimezone=UTC&userUnicode=true&useSSL=false&
